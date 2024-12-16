@@ -1,0 +1,27 @@
+package boletin;
+import java.util.Scanner;
+
+public class Actividad3 {
+
+	public static void main(String[] args) {
+	Scanner uno = new Scanner (System.in);
+	System.out.println("Introduce un caracter: ");
+	String caracter = uno.nextLine();
+	tipoDeChar(caracter);
+	}
+
+	public static String tipoDeChar (String a){
+	if (Character.isUpperCase('a')) {return  "Letra Mayúscula";}
+	else if (Character.isDigit('a')) {return "Es un numero";}
+	else if (Character.isSpaceChar('a')) {return "Es un espacio";}
+	return "otro caracater";}
+	
+	
+	public static String esParentesis(char a) {
+		if (a=='(' || a==')') {System.out.println("Es parentesis");} ;}
+	
+	public static boolean esCorchete(char a) {
+		if (a=='[' || a==']') {System.out.println("Es corchete");};}
+	
+	
+	}
