@@ -1,0 +1,48 @@
+package boletin;
+import java.util.Scanner;
+public class Actividad2 {
+	
+	
+	public static void main(String[] args) {
+		Scanner uno = new Scanner (System.in);
+		System.out.println(" Introduce un numero :");
+		int numero1 = Integer.valueOf(uno.nextInt());
+		
+		System.out.println("Introduce otro numero para ver si son Coprimos: ");
+		int numero2 = Integer.valueOf(uno.nextInt());
+		
+		if (esCoprimos(numero1,numero2)==true) { System.out.println("Son coprimos porque no tienen ningun divisor en común"+numero1+"y"+numero2);}
+		
+		
+		
+		}
+	public static boolean esCoprimos(int numero1,int numero2) {
+		int i=1;
+		boolean coprimos = false;
+		while (i<numero1  && coprimos==false) {
+			int contenedor = 0;
+			if (numero1%i==0) {
+				 contenedor = i ;
+				 boolean coprimosI =false; /*Creo esta variable para que el bucle while siguiente no sea infinito*/
+				 while (i<numero2 && coprimosI==false) {
+					 if (numero2%i==0) {System.out.println("No son coprimos"); coprimosI=true;}
+					 else {System.out.println("Son coprimos");
+					 coprimos = true;
+					 coprimosI = true; 
+					 }
+					 
+				 }
+			}
+			i++;
+			}return coprimos;
+		
+	}
+ 
+		
+			}
+
+	
+
+
+
+
