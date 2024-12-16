@@ -1,0 +1,22 @@
+package boletin;
+import java.util.Scanner;
+public class Actividad1 {
+
+	public static void main(String[] args) {
+		Scanner uno = new Scanner (System.in);
+		System.out.println(" Introduce un numero :");
+		int numero1 = Integer.valueOf(uno.nextInt());
+		
+		
+		System.out.println("Introduce otro numero para ver si son multiplos: ");
+		int numero2 = Integer.valueOf(uno.nextInt());
+		
+		if (esMultiplo(numero1,numero2)) { System.out.println("Son multiplos los numeros "+ numero1);}
+		else {System.out.println("No son multiplos");}
+		
+		
+		}
+	public static boolean esMultiplo (int numero1 , int numero2) { return  numero1%numero2==0 ;}
+	
+
+}
