@@ -141,3 +141,75 @@ FROM CLIENTES C, FACTURAS f,LINEAS_FAC lf ,ARTICULOS A
 WHERE C.CODCLI = F.CODCLI
 AND F.CODFAC = LF.CODFAC
 AND LF.CODART = A.CODART;
+/*Mostrar el nombre de todos los artículos que se han vendido alguna vez. (no deben salir valores repetidos)*/
+SELECT DISTINCT A.DESCRIP 
+FROM ARTICULOS a 
+INNER JOIN LINEAS_FAC lf 
+ON A.CODART = LF.CODART 
+WHERE LF.CANT >0;
+
+SELECT DISTINCT A.DESCRIP
+FROM ARTICULOS A , LINEAS_FAC lf 
+WHERE A.CODART = LF.CODART 
+AND LF.CANT>0;
+
+/*Se quiere saber el precio real al que se ha vendido cada vez los artículos. Para ello es necesario mostrar 
+ * el nombre del artículo, junto con el precio de venta (no el que está almacenado en la tabla de artículos) 
+ * menos el descuento aplicado en la línea de descuento.*/
+
+SELECT LF.PRECIO-LF.DTO, A.DESCRIP 
+FROM LINEAS_FAC lf 
+INNER JOIN ARTICULOS A
+ON A.CODART= LF.CODART ;
+
+SELECT LF.PRECIO-LF.DTO, A.DESCRIP
+FROM LINEAS_FAC lf , ARTICULOS a 
+WHERE A.CODART = LF.CODART ;
+
+/*Mostrar el nombre de los artículos que se han vendido a clientes que vivan en una provincia cuyo nombre termina  por a.*/
+SELECT A.DESCRIP  FROM ARTICULOS a 
+INNER JOIN LINEAS_FAC lf 
+ON A.CODART = LF.CODART 
+INNER JOIN FACTURAS f 
+ON LF.CODFAC = F.CODFAC 
+INNER JOIN CLIENTES c 
+ON F.CODCLI = F.CODCLI 
+WHERE C.CODPOSTAL LIKE '%A';
+
+SELECT A.DESCRIP 
+FROM ARTICULOS a , LINEAS_FAC lf ,FACTURAS f ,CLIENTES C
+WHERE A.CODART = LF.CODART
+AND LF.CODFAC = F.CODFAC
+AND C.CODCLI = F.CODCLI 
+AND C.CODPOSTAL LIKE '%A';
+
+/*Mostrar el nombre de los clientes sin que salgan repetidos a los que se les ha hecho un descuento superior al 10% en alguna de sus facturas.*/
+SELECT DISTINCT C.NOMBRE 
+FROM CLIENTES C
+INNER JOIN FACTURAS f 
+ON C.CODCLI = F.CODCLI 
+AND F.DTO > 10;
+
+SELECT DISTINCT C.NOMBRE 
+FROM CLIENTES C,FACTURAS f 
+WHERE C.CODCLI = F.CODCLI 
+AND F.DTO > 10;
+
+/*Mostrar el nombre de los clientes sin que salgan repetidos a los que se les ha hecho un descuento superior al 10% en alguna de sus facturas
+ *  o en alguna de las líneas que componen la factura o en ambas.*/
+SELECT DISTINCT C.NOMBRE 
+FROM CLIENTES C
+INNER JOIN FACTURAS f 
+ON C.CODCLI = F.CODCLI 
+AND F.DTO > 10 
+INNER JOIN LINEAS_FAC lf 
+;
+
+SELECT DISTINCT C.NOMBRE 
+FROM CLIENTES C,FACTURAS f 
+WHERE C.CODCLI = F.CODCLI 
+AND F.DTO > 10;
+
+/*Mostrar la descripción, la cantidad y el precio de venta de los artículos vendidos al cliente con nombre MARIA MERCEDES*/
+SELECT A.DESCRIOP , LF.CANT, F.PRECIO , C.NOMBRE 
+FROM CLIENTES c,ARTICULOS,
