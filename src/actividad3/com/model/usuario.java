@@ -14,6 +14,16 @@ public class usuario {
 			this.clave = clave;
 			this.rango = rango;
 		}
-		
-		
+
+	@Override
+	public String toString() {
+		return "usuario [nombre=" + nombre + ", correo=" + correo + ", clave=" + clave + ", rango=" + rango + "]";
+	}
+
+
+	public boolean equals(usuario obj) {
+		return obj!=null && obj instanceof usuario && this.clave.equals(obj.clave);
+	}
+	
+	
 }
