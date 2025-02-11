@@ -1,4 +1,6 @@
-package actividad3.com.model;
+package Boletin1.actvidad3.com.model;
+
+import java.util.Objects;
 
 public class cancion {
 
@@ -20,6 +22,19 @@ public class cancion {
 		this.n_reproduciiones = n_reproduciiones;
 	}
 
+	@Override
+	public String toString() {
+		return "cancion titulo=" + titulo + ", artista=" + artista + ", duracion=" + duracion + ", disco=" + disco
+				+ ", anyocreacion=" + anyocreacion + ", n_reproduciiones=" + n_reproduciiones ;
+	}
+
+
+	public boolean equals(cancion obj) {
+		return obj!=null && obj instanceof cancion && this.titulo.equals(obj.titulo) && this.artista.equals(obj.artista) ; 
+	}
+	
+	
+	
 	
 	
 }
