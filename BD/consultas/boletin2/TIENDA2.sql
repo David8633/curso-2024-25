@@ -24,26 +24,30 @@ INNER JOIN LINEAS_FAC lf
 ON A.CODART = LF.CODART 
 INNER JOIN FACTURAS f 
 ON LF.CODFAC = F.CODFAC 
-ORDER BY F.FECHA ASC, LF.CODART ASC, LF.CANT ASC;
+ORDER BY F.FECHA DESC, LF.CODART ASC, LF.CANT DESC;
 
 SELECT F.FECHA,A.CODART,LF.CANT 
 FROM ARTICULOS a ,LINEAS_FAC lf ,FACTURAS f 
 WHERE A.CODART = LF.CODART 
 AND LF.CODFAC = F.CODFAC 
-ORDER BY F.FECHA ASC, LF.CODART ASC, LF.CANT ASC;
+ORDER BY F.FECHA DESC, LF.CODART ASC, LF.CANT DESC;
 /*7. Mostrar el código de factura y la fecha de las mismas de las facturas que se han facturado a un cliente que tenga en su código postal un 7.*/
 SELECT F.CODFAC, F.FECHA  
 FROM FACTURAS f  
 INNER JOIN CLIENTES c
 ON F.CODCLI =C.CODCLI
-AND C.CODPOSTAL LIKE '%7%';
+AND C.CODPOSTAL LIKE '%7%'
+OR C.CODPOSTAL LIKE '7%'
+OR C.CODPOSTAL LIKE '%7';
 
 SELECT F.CODFAC, f.fecha
 FROM FACTURAS f, CLIENTES C
 WHERE F.CODCLI = C.CODCLI
-AND C.CODPOSTAL LIKE '%7%';
+AND C.CODPOSTAL LIKE '%7%'
+OR C.CODPOSTAL LIKE '7%'
+OR C.CODPOSTAL LIKE '%7';
 
-/*Mostrar el código de factura, la fecha y el nombre del cliente de todas las facturas existentes en la base de datos.*/
+/*8Mostrar el código de factura, la fecha y el nombre del cliente de todas las facturas existentes en la base de datos.*/
 SELECT F.CODFAC,F.FECHA , C.NOMBRE 
 FROM FACTURAS f
 INNER JOIN CLIENTES c 
@@ -53,22 +57,22 @@ SELECT F.CODFAC, F.FECHA , C.NOMBRE
 FROM FACTURAS f, CLIENTES C
 WHERE F.CODCLI = C.CODCLI ;
 
-/* Mostrar un listado con el código de la factura, la fecha, el iva, el dto y el nombre del cliente para aquellas facturas 
+/* 9Mostrar un listado con el código de la factura, la fecha, el iva, el dto y el nombre del cliente para aquellas facturas 
  * que o bien no se le ha cobrado iva (no se ha cobrado iva si el iva es nulo o cero), o bien el descuento es nulo.*/
 SELECT  F.CODFAC , F.FECHA , F.IVA , F.DTO , C.CODCLI 
 FROM FACTURAS F
 INNER JOIN CLIENTES c 
 ON F.CODCLI = C.CODCLI 
-AND NVL(IVA,0) = 0
-OR F.DTO IS NULL;
+WHERE NVL(F.IVA,0) = 0
+OR NVL(F.DTO,0)=0;
 
 SELECT  F.CODFAC , F.FECHA , F.IVA , F.DTO , C.CODCLI 
 FROM FACTURAS F ,CLIENTES c 
 WHERE F.CODCLI = C.CODCLI 
-AND NVL(F.IVA,0) = 0
-OR F.DTO IS NULL;
+AND (NVL(F.IVA,0) = 0
+OR NVL(F.DTO,0)=0);/*HAY QUE PONER PARENTESIS, PARA HACER PREFERENCIAS EN EL OR*/
 
-/* Se quiere saber que artículos se han vendido más baratos que el precio que actualmente tenemos almacenados en la tabla 
+/* 10Se quiere saber que artículos se han vendido más baratos que el precio que actualmente tenemos almacenados en la tabla 
  * de artículos, para ello se necesita mostrar la descripción de los artículos junto con el precio actual. Además deberá 
  * aparecer el precio en que se vendió si este precio es inferior al precio original.*/
 SELECT LF.PRECIO, A.DESCRIP, A.PRECIO 
@@ -82,23 +86,23 @@ FROM ARTICULOS a ,LINEAS_FAC lf
 WHERE A.CODART = LF.CODART 
 AND LF.PRECIO < A.PRECIO ;
 
-/*Mostrar el código de las facturas, junto a la fecha, iva y descuento. También debe aparecer la descripción de los
+/*11Mostrar el código de las facturas, junto a la fecha, iva y descuento. También debe aparecer la descripción de los
  *  artículos vendido junto al precio de venta, la cantidad y el descuento de ese artículo, para todos los artículos que 
  * se han vendido.*/
-SELECT F.CODFAC,F.FECHA,F.IVA,F.DTO,LF.CODART,LF.CANT,LF.DTO  
+SELECT F.CODFAC,F.FECHA,F.IVA,F.DTO,LF.CODART,LF.CANT,LF.DTO,A.DESCRIP 
 FROM LINEAS_FAC lf 
 INNER JOIN FACTURAS f   
 ON F.CODFAC = LF.CODFAC 
 INNER JOIN ARTICULOS a 
 ON LF.CODART = A.CODART ;
 
-SELECT F.CODFAC,F.FECHA,F.IVA,F.DTO,LF.CODART,LF.CANT,LF.DTO  
+SELECT F.CODFAC,F.FECHA,F.IVA,F.DTO,LF.CODART,LF.CANT,LF.DTO,A.DESCRIP 
 FROM LINEAS_FAC lf, FACTURAS f, ARTICULOS a 
 WHERE F.CODFAC = LF.CODFAC 
 AND LF.CODART = A.CODART ;
 
-/*Igual que el anterior, pero mostrando también el nombre del cliente al que se le ha vendido el artículo.*/
-SELECT F.CODFAC,F.FECHA,F.IVA,F.DTO,LF.CODART,LF.CANT,LF.DTO  
+/*12Igual que el anterior, pero mostrando también el nombre del cliente al que se le ha vendido el artículo.*/
+SELECT F.CODFAC,F.FECHA,F.IVA,F.DTO,LF.CODART,LF.CANT,LF.DTO,C.NOMBRE 
 FROM LINEAS_FAC lf 
 INNER JOIN FACTURAS f   
 ON F.CODFAC = LF.CODFAC 
@@ -107,26 +111,32 @@ ON LF.CODART = A.CODART
 INNER JOIN CLIENTES C
 ON F.CODCLI  = C.CODCLI ;
 
-SELECT F.CODFAC,F.FECHA,F.IVA,F.DTO,LF.CODART,LF.CANT,LF.DTO  
+SELECT F.CODFAC,F.FECHA,F.IVA,F.DTO,LF.CODART,LF.CANT,LF.DTO,C.NOMBRE
 FROM LINEAS_FAC lf , FACTURAS f, ARTICULOS a ,CLIENTES C 
 WHERE F.CODFAC = LF.CODFAC 
 AND LF.CODART = A.CODART 
 AND F.CODCLI  = C.CODCLI ;
 
-/*Mostrar los nombres de los clientes que viven en una provincia que contenga la letra ma.*/
+/*13Mostrar los nombres de los clientes que viven en una provincia que contenga la letra ma.*/
 SELECT C.NOMBRE 
 FROM CLIENTES C
 INNER JOIN PUEBLOS p 
 ON C.CODPUE = P.CODPUE 
 INNER JOIN PROVINCIAS p2 
-ON P.CODPRO = P2.CODPRO ;
+ON P.CODPRO = P2.CODPRO
+WHERE p2.NOMBRE LIKE'%MA%'
+OR P2.NOMBRE LIKE'%MA'
+OR P2.NOMBRE LIKE 'MA%';
 
 SELECT C.NOMBRE 
 FROM CLIENTES C, PUEBLOS p , PROVINCIAS p2
 WHERE C.CODPUE = P.CODPUE 
-AND P.CODPRO = P2.CODPRO ;
+AND P.CODPRO = P2.CODPRO 
+AND( p2.NOMBRE LIKE'%MA%'
+OR P2.NOMBRE LIKE'%MA'
+OR P2.NOMBRE LIKE 'MA%');
 
-/*Mostrar el código del cliente al que se le ha vendido un artículo que tienen un stock menor al stock mínimo.*/
+/*14Mostrar el código del cliente al que se le ha vendido un artículo que tienen un stock menor al stock mínimo.*/
 SELECT C.CODCLI
 FROM CLIENTES C
 INNER JOIN FACTURAS f 
@@ -134,14 +144,17 @@ ON C.CODCLI = F.CODCLI
 INNER JOIN LINEAS_FAC lf 
 ON F.CODFAC = LF.CODFAC 
 INNER JOIN ARTICULOS A 
-ON LF.CODART = A.CODART;
+ON LF.CODART = A.CODART
+WHERE A.STOCK < A.STOCK_MIN ;
 
 SELECT C.CODCLI
 FROM CLIENTES C, FACTURAS f,LINEAS_FAC lf ,ARTICULOS A 
 WHERE C.CODCLI = F.CODCLI
 AND F.CODFAC = LF.CODFAC
-AND LF.CODART = A.CODART;
-/*Mostrar el nombre de todos los artículos que se han vendido alguna vez. (no deben salir valores repetidos)*/
+AND LF.CODART = A.CODART
+AND A.STOCK <A.STOCK_MIN ;
+
+/*15Mostrar el nombre de todos los artículos que se han vendido alguna vez. (no deben salir valores repetidos)*/
 SELECT DISTINCT A.DESCRIP 
 FROM ARTICULOS a 
 INNER JOIN LINEAS_FAC lf 
@@ -153,37 +166,43 @@ FROM ARTICULOS A , LINEAS_FAC lf
 WHERE A.CODART = LF.CODART 
 AND LF.CANT>0;
 
-/*Se quiere saber el precio real al que se ha vendido cada vez los artículos. Para ello es necesario mostrar 
+/*16Se quiere saber el precio real al que se ha vendido cada vez los artículos. Para ello es necesario mostrar 
  * el nombre del artículo, junto con el precio de venta (no el que está almacenado en la tabla de artículos) 
  * menos el descuento aplicado en la línea de descuento.*/
 
-SELECT LF.PRECIO-LF.DTO, A.DESCRIP 
+SELECT LF.PRECIO-((LF.PRECIO*LF.DTO)/100) "PRECIO REAL", A.DESCRIP 
 FROM LINEAS_FAC lf 
 INNER JOIN ARTICULOS A
 ON A.CODART= LF.CODART ;
 
-SELECT LF.PRECIO-LF.DTO, A.DESCRIP
+SELECT LF.PRECIO-((LF.PRECIO*LF.DTO)/100) "PRECIO REAL", A.DESCRIP
 FROM LINEAS_FAC lf , ARTICULOS a 
 WHERE A.CODART = LF.CODART ;
 
-/*Mostrar el nombre de los artículos que se han vendido a clientes que vivan en una provincia cuyo nombre termina  por a.*/
+/*17Mostrar el nombre de los artículos que se han vendido a clientes que vivan en una provincia cuyo nombre termina  por a.*/
 SELECT A.DESCRIP  FROM ARTICULOS a 
 INNER JOIN LINEAS_FAC lf 
 ON A.CODART = LF.CODART 
 INNER JOIN FACTURAS f 
 ON LF.CODFAC = F.CODFAC 
 INNER JOIN CLIENTES c 
-ON F.CODCLI = F.CODCLI 
-WHERE C.CODPOSTAL LIKE '%A';
+ON C.CODCLI = F.CODCLI 
+INNER JOIN PUEBLOS p 
+ON C.CODPUE = P.CODPUE 
+INNER JOIN PROVINCIAS p2
+ON P.CODPRO = P2.CODPRO 
+WHERE P2.NOMBRE LIKE '%A';
 
 SELECT A.DESCRIP 
-FROM ARTICULOS a , LINEAS_FAC lf ,FACTURAS f ,CLIENTES C
+FROM ARTICULOS a , LINEAS_FAC lf ,FACTURAS f ,CLIENTES C,PUEBLOS p ,PROVINCIAS p2
 WHERE A.CODART = LF.CODART
 AND LF.CODFAC = F.CODFAC
 AND C.CODCLI = F.CODCLI 
-AND C.CODPOSTAL LIKE '%A';
+AND C.CODPUE = P.CODPUE
+AND P.CODPRO = P2.CODPRO
+AND P2.NOMBRE LIKE '%A';
 
-/*Mostrar el nombre de los clientes sin que salgan repetidos a los que se les ha hecho un descuento superior al 10% en alguna de sus facturas.*/
+/*18Mostrar el nombre de los clientes sin que salgan repetidos a los que se les ha hecho un descuento superior al 10% en alguna de sus facturas.*/
 SELECT DISTINCT C.NOMBRE 
 FROM CLIENTES C
 INNER JOIN FACTURAS f 
@@ -195,7 +214,7 @@ FROM CLIENTES C,FACTURAS f
 WHERE C.CODCLI = F.CODCLI 
 AND F.DTO > 10;
 
-/*Mostrar el nombre de los clientes sin que salgan repetidos a los que se les ha hecho un descuento superior al 10% en alguna de sus facturas
+/*19Mostrar el nombre de los clientes sin que salgan repetidos a los que se les ha hecho un descuento superior al 10% en alguna de sus facturas
  *  o en alguna de las líneas que componen la factura o en ambas.*/
 SELECT DISTINCT C.NOMBRE 
 FROM CLIENTES C
@@ -210,6 +229,6 @@ FROM CLIENTES C,FACTURAS f
 WHERE C.CODCLI = F.CODCLI 
 AND F.DTO > 10;
 
-/*Mostrar la descripción, la cantidad y el precio de venta de los artículos vendidos al cliente con nombre MARIA MERCEDES*/
+/*20Mostrar la descripción, la cantidad y el precio de venta de los artículos vendidos al cliente con nombre MARIA MERCEDES*/
 SELECT A.DESCRIOP , LF.CANT, F.PRECIO , C.NOMBRE 
 FROM CLIENTES c,ARTICULOS,
