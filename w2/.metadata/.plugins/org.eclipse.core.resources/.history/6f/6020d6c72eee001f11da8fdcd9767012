@@ -1,0 +1,29 @@
+package com.model;
+
+public class usuario {
+
+		private String nombre;
+		private String correo;
+		private String clave;
+		private boolean rango;
+		
+		public usuario(String nombre, String correo, String clave, boolean rango) {
+			super();
+			this.nombre = nombre;
+			this.correo = correo;
+			this.clave = clave;
+			this.rango = rango;
+		}
+
+	@Override
+	public String toString() {
+		return "usuario [nombre=" + nombre + ", correo=" + correo + ", clave=" + clave + ", rango=" + rango + "]";
+	}
+
+
+	public boolean equals(usuario obj) {
+		return obj!=null && obj instanceof usuario && this.clave.equals(obj.clave);
+	}
+	
+	
+}
