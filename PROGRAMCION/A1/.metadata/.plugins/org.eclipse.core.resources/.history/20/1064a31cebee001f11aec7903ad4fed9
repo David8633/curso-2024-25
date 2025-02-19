@@ -1,0 +1,23 @@
+package com;
+
+import java.util.Scanner;
+
+public class Exceptions {
+
+	public static void main(String[] args) {
+		
+		Scanner sc = new Scanner(System.in);
+		double radio = 1;
+		do {
+		try {
+			radio = Integer.valueOf(sc.nextLine());
+			
+		}catch(Exception e){
+			System.out.println(" Numero invalido o formato no correcto");
+		}
+		}while(radio<=0);
+		
+		radio>0 ? cal:
+	}
+
+}
