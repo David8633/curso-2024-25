@@ -1,0 +1,16 @@
+package com;
+
+public class main {
+
+	public static void main(String[] args) {
+		
+		cancion c1 = new Cancion("Pepito", "David", 1.2, "David el vaquilla", 2025, 80);
+		Cancion c2 = new Cancion("Juan", "ttt", 3, "Burro", 2025, 0);
+		Cancion c3 =new  Cancion("Bendecido", "Eladio Carrion", 3, "Sol Maria", 2024, 30000000);
+		Cancion c4 = new Cancion("Manolin", "David", 1.2, "David el vaquilla", 2025, 80);
+		Cancion c5 = new Cancion("Rios verdes", "David", 1.2, "David el vaquilla", 2025, 80);
+		Cancion c6 = new Cancion("El monte", "David", 1.2, "David el vaquilla", 2025, 80);
+		
+	}
+
+}

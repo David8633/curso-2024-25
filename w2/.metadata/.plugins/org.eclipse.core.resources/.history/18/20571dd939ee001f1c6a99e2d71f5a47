@@ -1,0 +1,70 @@
+package com.model;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+
+public class ListaReproducciones  {
+	private String nombre;
+	private String usuarioAsociado;
+	private int n_reproducciones;
+	private LocalDate fechaCreaccion;
+	private LocalDate ultimaReproduccion;
+	private cancion nombreCancion;
+ 
+		
+	public ListaReproducciones(String nombre, String usuarioAsociado, int n_reproducciones, LocalDate fechaCreaccion,
+			LocalDate ultimaReproduccion, cancion nombreCancion) {
+		super();
+		this.nombre = nombre;
+		this.usuarioAsociado = usuarioAsociado;
+		this.n_reproducciones = n_reproducciones;
+		this.fechaCreaccion = fechaCreaccion;
+		this.ultimaReproduccion = ultimaReproduccion;
+		this.nombreCancion = nombreCancion;
+		
+	}
+	private cancion canciones[]= new cancion[25];
+	int i=0;
+	public void añadirCanciones(cancion otra) {
+		canciones[i]=otra;
+		i++;
+	}
+	
+	int j=0;
+	public void eliminarCanciones(cancion nombreCancionEliminar) {
+		while(j<canciones.length-1) {
+			if(canciones[j].equals(nombreCancionEliminar)) {
+				canciones[j]=null;
+			
+		}j++;
+	}
+	}
+	public String mostrarCanciones()
+	{
+		return Arrays.toString(canciones);
+	}
+
+	@Override
+	public String toString() {
+		return "ListaReproducciones" + nombre + "usuarioAsociado=" + usuarioAsociado + ", n_reproducciones="
+				+ n_reproducciones + ", fechaCreaccion=" + fechaCreaccion + ", ultimaReproduccion=" + ultimaReproduccion
+				+ ", nombreCancion=" + nombreCancion + ", canciones=" + Arrays.toString(canciones) ;
+	}	
+	
+	
+	public boolean equals(ListaReproducciones otra) {
+		return otra!=null && otra instanceof ListaReproducciones && this.canciones.equals(otra.canciones);
+	}
+
+	public cancion[] mostrarArtista(String Artista) {
+		cancion[] resultado = new cancion[100];
+		for (cancion Cancion : canciones) {
+			if( Cancion != null && Cancion.getArtista().equals(Cancion)) {
+				
+			};
+		}
+	}
+	
+	
+}
+

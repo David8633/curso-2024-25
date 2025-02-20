@@ -1,0 +1,44 @@
+package com.model;
+
+import java.util.Objects;
+
+public class cancion {
+
+	private String titulo;
+	private String artista;
+	private double duracion;
+	private String disco;
+	private int anyocreacion; 
+	private int n_reproduciiones;
+	
+	public cancion(String titulo, String artista, double duracion, String disco, int anyocreacion,
+			int n_reproduciiones) {
+		super();
+		this.titulo = titulo;
+		this.artista = artista;
+		this.duracion = duracion;
+		this.disco = disco;
+		this.anyocreacion = anyocreacion;
+		this.n_reproduciiones = n_reproduciiones;
+	}
+
+	@Override
+	public String toString() {
+		return "cancion titulo=" + titulo + ", artista=" + artista + ", duracion=" + duracion + ", disco=" + disco
+				+ ", anyocreacion=" + anyocreacion + ", n_reproduciiones=" + n_reproduciiones ;
+	}
+
+
+	public boolean equals(cancion obj) {
+		return obj!=null && obj instanceof cancion && this.titulo.equals(obj.titulo) && this.artista.equals(obj.artista) ; 
+	}
+
+	public String getArtista() {
+		return artista;
+	}
+
+	
+	
+	
+	
+}
