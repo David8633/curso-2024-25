@@ -24,11 +24,13 @@
 	ON T.IDTITULACION = A.IDTITULACION
 	GROUP BY T.IDTITULACION, T.NOMBRE;
     /*4. Cual sería el coste global de cursar la titulación de Matemáticas si el coste de cada asignatura fuera incrementado en un 7%. */
+
 	SELECT T.NOMBRE,SUM(A.IDASIGNATURA*1.07)
 	FROM TITULACION t , ASIGNATURA a 
 	WHERE T.IDTITULACION = A.IDTITULACION 
+	AND t.NOMBRE like 'Matematicas'
 	GROUP BY T.NOMBRE;
-	
+	    	
 	SELECT T.NOMBRE,SUM(A.IDASIGNATURA*1.07)
 	FROM TITULACION t 
 	INNER JOIN ASIGNATURA a 
@@ -58,36 +60,27 @@
 	GROUP BY A.IDASIGNATURA,A.NOMBRE ;
     /*7. Mostrar para cada alumno, el nombre del alumno junto con lo que tendría que pagar por el total de todas las asignaturas en las que está matriculada. 
      * Recuerda que el precio de la matrícula tiene un incremento de un 10% por cada año en el que esté matriculado.*/ 
-	SELECT P.NOMBRE,SUM(A1.COSTEBASICO*POWER(1.1,AA.NUMEROMATRICULA)) AS PRECIO_DE_LA_MATRICULA
-	FROM ALUMNO a ,ALUMNO_ASIGNATURA aa, PERSONA p,ASIGNATURA a1
-	WHERE P.DNI = A.DNI
-	AND A.IDALUMNO = AA.IDALUMNO 
-	AND AA.IDASIGNATURA = A1.IDASIGNATURA
-	GROUP BY P.NOMBRE;
-	
-	SELECT P.NOMBRE,SUM(A1.COSTEBASICO*POWER(1.1,AA.NUMEROMATRICULA)) AS PRECIO_DE_LA_MATRICULA
-	FROM ALUMNO a  
-	INNER JOIN PERSONA p
-	ON P.DNI = A.DNI
-	INNER JOIN ALUMNO_ASIGNATURA aa 
-	ON A.IDALUMNO = AA.IDALUMNO 
-	INNER JOIN ASIGNATURA a1
-	ON AA.IDASIGNATURA = A1.IDASIGNATURA
-	GROUP BY P.NOMBRE;	
+	SELECT p.NOMBRE, SUM(a2.COSTEBASICO * (1+(0.1 * aa.NUMEROMATRICULA-0.1)))
+	FROM ALUMNO_ASIGNATURA aa JOIN ALUMNO a ON aa.IDALUMNO = a.IDALUMNO 
+	JOIN ASIGNATURA a2 ON aa.IDASIGNATURA = a2.IDASIGNATURA JOIN PERSONA p ON a.DNI = p.DNI 
+	GROUP BY p.NOMBRE;
+	/*POWER ES PARA ELEVAR UN NUMERO, Y SE PONE -0,1 PORQUE EL PRIMER AÑO NO CUENTA*/
     /*8. Coste medio de las asignaturas de cada titulación, para aquellas titulaciones en el que el coste total de la 1ª matrícula sea mayor que 60 euros. */
-	SELECT T.IDTITULACION, AVG(A.IDASIGNATURA) 
-	FROM ASIGNATURA a,TITULACION t  
-	WHERE a.IDTITULACION = T.IDTITULACION
-	GROUP BY T.IDTITULACION
+	SELECT AVG(A.IDASIGNATURA) 
+	FROM ASIGNATURA a,ALUMNO_ASIGNATURA aa 
+	WHERE AA.NUMEROMATRICULA = 1
+	GROUP BY A.IDTITULACION
+	HAVING SUM(A.IDASIGNATURA)>60;
+	
+	SELECT AVG(A.IDASIGNATURA) AS COSTE_MEDIO
+	FROM ASIGNATURA a
+	INNER JOIN ALUMNO_ASIGNATURA aa 
+	ON AA.NUMEROMATRICULA = 1
+	AND AA.IDASIGNATURA = A.IDASIGNATURA
+	GROUP BY A.IDTITULACION
 	HAVING AVG(A.IDASIGNATURA)>60;
 	
-	SELECT T.IDTITULACION, AVG(A.IDASIGNATURA) 
-	FROM ASIGNATURA a
-	INNER JOIN TITULACION t  
-	ON a.IDTITULACION = T.IDTITULACION
-	GROUP BY T.IDTITULACION
-	HAVING AVG(A.IDASIGNATURA)>60;
-    /*9. Nombre de las titulaciones  que tengan más de tres alumnos.*/
+	/*9. Nombre de las titulaciones  que tengan más de tres alumnos.*/
 	SELECT T.NOMBRE
 	FROM TITULACION T,ASIGNATURA a ,ALUMNO_ASIGNATURA aa 
 	WHERE T.IDTITULACION = A.IDTITULACION 
@@ -123,7 +116,7 @@
 	AND A1.IDASIGNATURA = AA.IDASIGNATURA
 	AND AA.IDALUMNO = A.IDALUMNO
     GROUP BY P.NOMBRE
-    HAVING COUNT(A.IDALUMNO)>2;
+    HAVING COUNT(A.IDALUMNO)>=2;
     
     SELECT P.NOMBRE,COUNT(A.IDALUMNO)
 	FROM PERSONA p
@@ -139,10 +132,9 @@
     HAVING COUNT(A.IDALUMNO)>2;
     
     /*13. Obtener el máximo de las sumas de los costesbásicos de cada cuatrimestre*/
-  	SELECT A.CUATRIMESTRE, SUM(A.COSTEBASICO) AS SUMA_COSTE
+  	SELECT MAX(SUM(A.COSTEBASICO)) AS SUMA_COSTE
   	FROM ASIGNATURA A
-  	GROUP BY A.CUATRIMESTRE
-  	ORDER BY SUMA_COSTE DESC;
+  	GROUP BY A.CUATRIMESTRE;
     
     /*14. Suma del coste de las asignaturas*/
     SELECT SUM(A.COSTEBASICO )
@@ -157,15 +149,15 @@
     FROM ASIGNATURA a ;
     
     /*17. ¿Cuántas posibilidade de créditos de asignatura hay?*/
-    SELECT COUNT(A.CREDITOS)
+    SELECT COUNT( DISTINCT A.CREDITOS)
     FROM  ASIGNATURA a ;
     
     /*18. ¿Cuántos cursos hay?*/
-    SELECT COUNT(A.CURSO)
+    SELECT COUNT(DISTINCT A.CURSO)
     FROM ASIGNATURA a ;
     
     /*19. ¿Cuántas ciudades hau?*/
-    SELECT COUNT(P.CIUDAD)
+    SELECT COUNT(DISTINCT P.CIUDAD)
 	FROM PERSONA P;
     
     /*20. Nombre y número de horas de todas las asignaturas.*/
@@ -177,8 +169,10 @@
     SELECT A.NOMBRE 
     FROM ASIGNATURA A 
     WHERE A.IDTITULACION IS NULL;
+    
     /*22. Listado del nombre completo de las personas, sus teléfonos y sus direcciones, llamando a la columna 
      * del nombre "NombreCompleto" y a la de direcciones "Direccion".*/
+    
     SELECT P.NOMBRE || ' ' || P.APELLIDO AS NOMBRE_COMPLETO,
     P.TELEFONO, 
     P.DIRECCIONCALLE || ' ' || P.DIRECCIONNUM  AS DIRECCION
@@ -186,14 +180,19 @@
     
     /*23. Cual es el día siguiente al día en que nacieron las personas de la B.D.*/
 	
+    SELECT P.NOMBRE, P.FECHA_NACIMIENTO +1
+    FROM PERSONA P;
+    
     /*24. Años de las personas de la Base de Datos, esta consulta tiene que valor para cualquier momento*/
     
+    SELECT NOMBRE, EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM FECHA_NACIMIENTO) AS EDAD 
+	FROM PERSONA;
     
     /*25. Listado de personas mayores de 25 años ordenadas por apellidos y nombre, esta consulta tiene que valor  para cualquier momento/*
     */
-    SELECT P.NOMBRE, P.APELLIDO, (SYSDATE-P.FECHA_NACIMIENTO) AS EDAD
+    SELECT P.NOMBRE, P.APELLIDO
     FROM PERSONA P
-    WHERE EDAD>25
+    WHERE EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM P.FECHA_NACIMIENTO) >25
     ORDER BY P.APELLIDO, P.NOMBRE;
     /*26. Nombres completos de los profesores que además son alumnos*/
     SELECT P.NOMBRE, P.APELLIDO
@@ -234,6 +233,15 @@
     AND T.NOMBRE  LIKE 'Matematicas';
      
     /*29. ¿Cuánto paga cada alumno por su matrícula?*/
+SELECT P.NOMBRE, SUM(A2.COSTEBASICO)
+FROM PERSONA P
+INNER JOIN ALUMNO a 
+ON P.DNI = A.DNI
+INNER JOIN ALUMNO_ASIGNATURA aa 
+ON A.IDALUMNO = AA.IDALUMNO
+INNER JOIN ASIGNATURA a2
+ON AA.IDASIGNATURA = A2.IDASIGNATURA
+GROUP BY P.NOMBRE;
 
     
     /*30. ¿Cuántos alumnos hay matriculados en cada asignatura?*/
