@@ -55,22 +55,106 @@ por cualquier razón no es posible actualizar todos estos salarios, debe
 deshacerse el trabajo a la situación inicial.*/
 
 CREATE OR REPLACE 
-PROCEDURE  ACTIVIDAD1_PLSQL.SUBIRSALARIO
+PROCEDURE ASCENSO_SALARIO
 IS
-	CURSOR C_EMPLEADOS IS 
-	SELECT E.NUMEM,E.NOMEM,E.SALAR AS SALARIO_ANTERIOR,E.SALAR + E.SALAR*0,10 AS SALARIO_ACTUALIZADO FROM EMPLEADOS E 
-    WHERE E.SALAR < 2000 AND E.NUMHI > 2;
+	CURSOR C_EMP IS
+	SELECT e.NUMEM, e.NOMEM, e.SALAR
+    FROM EMPLEADOS e 
+    WHERE e.NUMHI > 2
+    AND e.SALAR < 2000;
+	
+BEGIN 
+
+	FOR EMP IN C_EMP
+		LOOP
+			DBMS_OUTPUT.PUT_LINE('NUMERO EMPLEADO :'  || EMP.NUMEM)
+			DBMS_OUTPUT.PUT_LINE('NOMBRE EMPLEADO :' || EMP.NOMEM)
+			DBMS_OUTPUT.PUT_LINE('SALARIO EMPLEADO :'|| EMP.SALAR)
+			
+			UPDATE EMPLEADOS
+			SET SALAR = EMP.SALAR * 1.10
+			WHERE NUMEM = EMP.NUMEM;
+			
+			 COMMIT;
+
+			EXCEPTION
+	    		WHEN OTHERS THEN
+	        	ROLLBACK;
+	        	DBMS_OUTPUT.PUT_LINE('Error: '  SQLERRM);
+			END subida_salario;
+				
+		END LOOP;
+		
+END;
+
 BEGIN
-	FOR REGISTRO IN V_EMP 
-	LOOP
-	DBMS_OUTPUT.PUT_LINE();		
-	END LOOP
+    ASCENSO_SALARIO;
 END
+
+
 
 /*3. Escribe un procedimiento que reciba dos parámetros (número de
 departamento, hijos). Deber. crearse un cursor explícito al que se le pasarán
 estos parámetros y que mostrar. los datos de los empleados que pertenezcan
 al departamento y con el número de hijos indicados. Al final se indicar. el
-número de empleados obtenidos.*/
+-número de empleados obtenidos.*/
+CREATE OR REPLACE 
+PROCEDURE calcular_cantidad(NUMDEPT NUMBER,NUMHIJOS NUMBER)
+IS
+	v_cantidad number := 0;
+
+	CURSOR C_EMPLEADOS IS
+	SELECT e.numem,e.noemp FROM EMPLEADOS e
+	WHERE e.numde = numdept AND e.numhij = numhijos;
+BEGIN
+
+	FOR emp IN c_empleados
+	loop
+		v_cantidad := v_cantidad +1;
+	end loop
+	
+	dbms_output.put_line('cantidad de empleados con dichas caracteristicas : ' || v_cantidad )
+	
+END;
+
+
+CREATE OR REPLACE 
+PROCEDURE(NUMDEPT NUMBER,NUMHIJOS NUMBER)
+IS
+	v_cantidad number;
+BEGIN
+	CURSOR C_EMPLEADOS IS
+	SELECT count(e.numem)
+	INTO v_cantidad
+	FROM EMPLEADOS e
+	WHERE e.numde = numdept AND e.numhij = numhijos;
+	dbms_output.put_line('cantidad de empleados con dichas caracteristicas : ' || v_cantidad )
+END
+
+
 /*4. Escribe un procedimiento con un parámetro para el nombre de empleado,
 que nos muestre la edad de dicho empleado en años, meses y días.*/
+
+CREATE OR replace 
+PROCEDURE MOSTRAR_EDAD(NOEMP VARCHAR2)
+IS
+		
+	TYPE V_EMPLEADOS IS RECORD(
+		V_AÑOS NUMBER;
+		V_MESE NUMBER;
+		V_DIAS NUMBER;
+
+	);
+	
+BEGIN
+	SELECT E. 
+	INSERT INTO V_EMPLEADOS  
+	FROM EMPLEADOS E;
+
+	DBMS_OUTPUT.PTU_LINE('MI EDAD EN AÑOS SERIAN: '|| V_EMPLEADOS.V.AÑOS);
+	DBMS_OUTPUT.PTU_LINE('MI EDAD EN MESES SERIAN: '|| V_EMPLEADOS.V.MESE);
+	DBMS_OUTPUT.PTU_LINE('MI EDAD EN DIAS SERIAN: '|| V_EMPLEADOS.V.DIAS);
+	
+END
+
+
